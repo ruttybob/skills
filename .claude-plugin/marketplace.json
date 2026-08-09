@@ -21,6 +21,42 @@
       "source": "./plugins/improve-claude-md",
       "category": "productivity",
       "keywords": ["claude-md", "instructions", "important-if", "claude-code"]
+    },
+    {
+      "name": "narrow-react-prop-types",
+      "description": "Narrow React component prop types to match live code paths",
+      "version": "1.0.0",
+      "author": {
+        "name": "humanlayer",
+        "email": "support@humanlayer.dev"
+      },
+      "source": "./plugins/narrow-react-prop-types",
+      "category": "productivity",
+      "keywords": ["react", "typescript", "props", "components", "claude-code"]
+    },
+    {
+      "name": "build-iterated-agentic-loop",
+      "description": "Build a repo-local skill plus an iterated coding-agent workflow, prompt, and memory file",
+      "version": "1.0.0",
+      "author": {
+        "name": "humanlayer",
+        "email": "support@humanlayer.dev"
+      },
+      "source": "./plugins/build-iterated-agentic-loop",
+      "category": "productivity",
+      "keywords": ["iterated-agentic-loop", "coding-agents", "github-actions", "skills", "claude-code"]
+    },
+    {
+      "name": "design-control-loop",
+      "description": "Interview the user to design an agentic control loop (sensor, controller, actuator under disturbances), then build it as locally-runnable components plus a scheduled coding-agent workflow",
+      "version": "1.0.0",
+      "author": {
+        "name": "humanlayer",
+        "email": "support@humanlayer.dev"
+      },
+      "source": "./plugins/design-control-loop",
+      "category": "productivity",
+      "keywords": ["control-loop", "control-theory", "sensor-controller-actuator", "iterated-agentic-loop", "coding-agents", "github-actions", "skills", "claude-code"]
     }
   ]
 }
