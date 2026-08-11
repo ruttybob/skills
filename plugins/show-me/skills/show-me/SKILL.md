@@ -38,9 +38,9 @@ submitForm
 
 ```text
 src/
-|-- commands/       # parses user actions
-|-- sessions/       # owns session state
-`-- transport/      # sends API requests
+├── commands/       # parses user actions
+├── sessions/       # owns session state
+└── transport/      # sends API requests
 ```
 
 - Show component interaction, control flow, or data flow with Mermaid:
@@ -72,13 +72,13 @@ For a file-layout change:
 
 ```diff
  src/
- |-- commands/
-+|   `-- show-me.ts       # expands the slash command
- |-- sessions/
--`-- transport.ts
-+`-- transport/
-+    |-- client.ts
-+    `-- stream.ts
+ ├── commands/
++│   └── show-me.ts       # expands the slash command
+ ├── sessions/
+-└── transport.ts
++└── transport/
++    ├── client.ts
++    └── stream.ts
 ```
 
 For a call-tree or call-stack change:
