@@ -35,28 +35,16 @@
       "keywords": ["react", "typescript", "props", "components", "claude-code"]
     },
     {
-      "name": "build-iterated-agentic-loop",
-      "description": "Build a repo-local skill plus an iterated coding-agent workflow, prompt, and memory file",
-      "version": "1.0.0",
-      "author": {
-        "name": "humanlayer",
-        "email": "support@humanlayer.dev"
-      },
-      "source": "./plugins/build-iterated-agentic-loop",
-      "category": "productivity",
-      "keywords": ["iterated-agentic-loop", "coding-agents", "github-actions", "skills", "claude-code"]
-    },
-    {
       "name": "design-control-loop",
-      "description": "Interview the user to design an agentic control loop (sensor, controller, actuator under disturbances), then build it as locally-runnable components plus a scheduled coding-agent workflow",
-      "version": "1.0.0",
+      "description": "Interview the user to design an agentic control loop — sensor, controller, actuator under disturbances — or any iterated coding-agent loop that opens small reviewable PRs on a schedule, then build it as a repo-local skill, workflow, prompt, and memory file",
+      "version": "1.1.0",
       "author": {
         "name": "humanlayer",
         "email": "support@humanlayer.dev"
       },
       "source": "./plugins/design-control-loop",
       "category": "productivity",
-      "keywords": ["control-loop", "control-theory", "sensor-controller-actuator", "iterated-agentic-loop", "coding-agents", "github-actions", "skills", "claude-code"]
+      "keywords": ["control-loop", "control-theory", "sensor-controller-actuator", "iterated-agentic-loop", "iterated-coding-agent-loop", "coding-agents", "github-actions", "skills", "claude-code"]
     },
     {
       "name": "show-me",

@@ -15,6 +15,11 @@ on:
   schedule:
     - cron: "0 13 * * *" # Update me based on user preferences
   workflow_dispatch:
+    inputs:
+      target_hint:
+        description: "Specific path, package, or finding to start from (optional)"
+        required: false
+        type: string
   issue_comment:
     types: [created] # for iteration!
 
@@ -181,7 +186,15 @@ jobs:
 
       - name: Controller — select the next increment
         if: steps.agent_gate.outputs.run_agent == 'true' && github.event_name != 'issue_comment'
+        env:
+          TARGET_HINT: ${{ github.event.inputs.target_hint }}
         run: |
+          # A manual dispatch can pin the run to a specific path, package, or finding
+          # instead of letting the controller choose freely.
+          if [ -n "$TARGET_HINT" ]; then
+            echo "Manual run pinned to: $TARGET_HINT — start there instead of choosing freely." > /tmp/controller-output.md
+            exit 0
+          fi
           # Consume /tmp/sensor-output.json and choose what to change this run, within scope
           # and batch size. Deterministic example: sort findings and take the top N.
           # If the agent itself is the controller, delete this step.

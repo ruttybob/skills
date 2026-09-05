@@ -38,23 +38,9 @@ Then in your project:
 /narrow-react-prop-types
 ```
 
-### build-iterated-agentic-loop
-
-Builds a repo-local skill plus an iterated coding-agent GitHub Actions workflow, prompt, memory file, and reference templates.
-
-```bash
-npx skills add humanlayer/skills --skill build-iterated-agentic-loop
-```
-
-Then in your project:
-
-```
-/build-iterated-agentic-loop
-```
-
 ### design-control-loop
 
-Interviews you to design an agentic control loop — sensor, controller, actuator, and disturbances — tailored to your codebase, then builds it as locally-runnable components plus a scheduled coding-agent workflow.
+Interviews you to design an agentic control loop — sensor, controller, actuator, and disturbances — tailored to your codebase, then builds it as locally-runnable components plus a scheduled coding-agent workflow. Supersedes `build-iterated-agentic-loop`: any iterated coding-agent loop that opens small reviewable PRs on a schedule is designed and built here.
 
 ```bash
 npx skills add humanlayer/skills --skill design-control-loop

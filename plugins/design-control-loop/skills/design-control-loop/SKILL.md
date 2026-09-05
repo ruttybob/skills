@@ -1,11 +1,11 @@
 ---
 name: design-control-loop
-description: interview the user to design an agentic control loop (sensor, controller, actuator under disturbances) tailored to their codebase, then build it as locally-runnable components plus a scheduled coding-agent workflow
+description: interview the user to design an agentic control loop — sensor, controller, actuator under disturbances — or any iterated coding-agent loop that opens small reviewable PRs on a schedule, then build it as a repo-local skill, workflow, prompt, and memory file
 ---
 
 # Design Control Loop
 
-Use this skill when a user wants to drive some property of their codebase toward a target with small, low-risk, reviewable changes on a schedule — an **agentic control loop**.
+Use this skill when a user wants to drive some property of their codebase toward a target with small, low-risk, reviewable changes on a schedule — an **agentic control loop**, also called an iterated agentic loop.
 
 Your job is to **interview the user, design the loop _with_ them, and then build it for them**. The design must be tailored to *their* codebase and the tooling they already use. There is no fixed toolset and no template to reproduce: propose options grounded in what you find in the repo, discuss trade-offs, agree on a design, then implement it.
 
@@ -65,7 +65,7 @@ This is an interview. Work through each component below. Start by asking the use
 
 2. **Sensor.** How will the loop measure the gap to the set point? Inspect the codebase and the user's existing tooling and propose the options that fit *their* stack — a static-analysis or lint tool, a structural/AST search, a test suite, a type checker, a telemetry or error query, a custom script, or even an agent-based check. Discuss the trade-offs that matter to them (stability, cost, repeatability, and whether the measurement can be silently disabled) instead of mandating any property. Aim for a measurement the controller can act on repeatably.
 
-3. **Controller.** How will the loop choose the next increment from the measurement, sized to stay low-risk and reviewable? Design this *with* the user: how to prioritize targets, how big one increment is, and what "one reviewable unit of work" means here. A controller can be anything from fully deterministic (a script that selects the next target) to fully agentic (an agent that decides from natural-language criteria), and it may be **fused** with the sensor or the actuator. The controller is the part you will **tune over time** from loop output — start simple and expect to revise it.
+3. **Controller.** How will the loop choose the next increment from the measurement, sized to stay low-risk and reviewable? Design this *with* the user: how to prioritize targets, how big one increment is, and what "one reviewable unit of work" means here. Name the operation per increment — **fix, migrate, generate, or refactor** — so a reviewable unit has a concrete shape. A controller can be anything from fully deterministic (a script that selects the next target) to fully agentic (an agent that decides from natural-language criteria), and it may be **fused** with the sensor or the actuator. The controller is the part you will **tune over time** from loop output — start simple and expect to revise it.
 
 4. **Actuator.** A coding agent plus a repo-local skill applies the change.
    - **Agent + credentials.** Pick the CLI coding agent (Claude Code, Codex, OpenCode, CodeLayer, …), its secret, and its headless command from `references/agent-runner-templates.md`.
@@ -74,7 +74,7 @@ This is an interview. Work through each component below. Start by asking the use
 
 5. **Disturbances + dampener (offer).** Name what changes the system outside the loop (teammates shipping concurrently, dependency bumps, generated code). Then **offer** a dampener: a check that keeps the measured problem from getting worse while the scheduled loop chips away at it — for example a PR check that compares the sensor's output against a baseline and surfaces (or eventually blocks) newly introduced deviations. This is optional; some loops do not need one.
 
-Completion criterion: a short written design naming the set point, sensor, controller, actuator (agent + skill + validation), and disturbances/dampener — with each component something the user can run locally.
+Completion criterion: a short written design naming the set point, sensor, controller, actuator (agent + skill + validation), and disturbances/dampener — with each component something the user can run locally. State the whole loop in one sentence, e.g. "Find the five worst react-doctor violations, fix them, and prove it with typecheck and quality."
 
 ### Phase C — Build the actuator skill
 
@@ -113,6 +113,7 @@ Completion criterion: the user can run sensor, controller, and actuator locally 
 Assemble the components into a recurring job. GitHub Actions is the default because it already has the code, the secrets, version control, and scheduling/dispatch — but use whatever CI the repo uses.
 
 - Run the loop as **discrete steps: sensor → controller → actuator**, then commit and open a PR using the agent's final message as the body. (When components are fused — e.g. the sensor already prioritizes, or one agent both selects and changes — collapse them into a single step; do not invent separation the design does not have.)
+- Put repo-specific targeting in the workflow's prompt, not in the generic actuator skill — the skill carries judgement that survives across runs; the prompt carries this repo's paths, scope, and constraints.
 - Reusable logic can live in a custom composite action.
 - Decide the **cadence** (daily, weekdays, weekly, monthly, manual-only, or custom cron) based on task risk and review burden.
 - Interpolate the memory file (Phase F) into the actuator's context.
@@ -127,7 +128,7 @@ Completion criterion: the workflow can run from `workflow_dispatch` without rely
 A scheduled loop drifts without steering. Give the human two channels, both of which should change future behavior, not just the current PR:
 
 - **Memory/feedback file.** A version-controlled markdown file (e.g. `.github/agent-memory/<task-slug>.md`) loaded deterministically into the actuator's context **after the controller** on every run. Use `references/memory-template.md`. Good entries: permanent scope exclusions, known false-positive areas, and reviewer feedback that should change future selections — not one-off instructions or single-run logs.
-- **`/iterate` on the PR.** Label each loop's PRs and embed a hidden marker so each workflow only handles comments on PRs it created. When a maintainer comments `/iterate`, the matching workflow loads the PR context (diff, comments) and the feedback, and the agent updates its memory and the PR. Install `references/agent-iteration.ts` (modes: `footer` and `prompt`) where the repo keeps CI scripts.
+- **`/iterate` on the PR.** Label each loop's PRs and embed a hidden marker so each workflow only handles comments on PRs it created. When a maintainer comments `/iterate`, the matching workflow loads the PR context (diff, comments) and the feedback, and the agent updates its memory and the PR. Confirm the user wants this channel; if they decline, ship labels and the memory file only. Otherwise install `references/agent-iteration.ts` (modes: `footer` and `prompt`) where the repo keeps CI scripts.
 
 Frame this for the user as **how you tune the controller and skill over time** — the loop gets better because a human keeps correcting it.
 
@@ -168,5 +169,7 @@ Each phase above names the references relevant to it — read each one when you 
 - `references/memory-template.md` — memory/feedback file skeleton.
 - `references/skill-template.md` — skeleton for the generated actuator skill.
 - `references/response-template.md` — examples for how the agent should format its final response (the PR body).
-- `references/example-skill.md` — a concrete example of a well-formed task skill.
+- `references/example-skill.md` — a concrete example of a well-formed task skill (`narrow-react-prop-types` in this repo is that example skill, shipped).
+- `references/agent-narrow-component-props.yml` — a shipped example workflow that runs the example skill through CodeLayer on a schedule.
+- `references/narrow-component-props-memory.md` — the matching agent-memory file for that example.
 - `references/agent-iteration.ts` — helper for `/iterate` support (PR footer marker + iteration prompt building).
